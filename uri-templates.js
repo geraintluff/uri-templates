@@ -23,6 +23,7 @@
 		var prefix = "";
 		var shouldEscape = true;
 		var showVariables = false;
+		var trimEmptyString = false;
 		if (modifier == '+') {
 			shouldEscape = false;
 		} else if (modifier == ".") {
@@ -38,6 +39,7 @@
 			prefix = ";";
 			separator = ";",
 			showVariables = true;
+			trimEmptyString = true;
 		} else if (modifier == '?') {
 			prefix = "?";
 			separator = "&",
@@ -111,7 +113,10 @@
 					}
 				} else {
 					if (showVariables) {
-						result += varSpec.name + "=";
+						result += varSpec.name;
+						if (!trimEmptyString || value != "") {
+							result += "=";
+						}
 					}
 					if (varSpec.truncate != null) {
 						value = value.substring(0, varSpec.truncate);
@@ -278,6 +283,9 @@
 	}
 
 	function UriTemplate(template) {
+		if (!(this instanceof UriTemplate)) {
+			return new UriTemplate(template);
+		}
 		var parts = template.split("{");
 		var textParts = [parts.shift()];
 		var substitutions = [];
