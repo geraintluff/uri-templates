@@ -334,7 +334,8 @@
 			var result = {};
 			for (var i = 0; i < textParts.length; i++) {
 				var part = textParts[i];
-				if (substituted.substring(0, part.length) != part) {
+				if (substituted.substring(0, part.length) !== part) {
+					console.log([substituted, part]);
 					return undefined;
 				}
 				substituted = substituted.substring(part.length);
@@ -346,17 +347,26 @@
 					}
 				}
 				var nextPart = textParts[i + 1];
-				if (nextPart) {
-					var nextPartPos = substituted.indexOf(nextPart);
-					var stringValue = substituted.substring(0, nextPartPos);
-					substituted = substituted.substring(nextPartPos);
-				} else if (prefixes[i + 1]) {
-					var nextPartPos = substituted.indexOf(prefixes[i + 1]);
-					var stringValue = substituted.substring(0, nextPartPos);
-					substituted = substituted.substring(nextPartPos);
-				} else {
-					var stringValue = substituted;
-					substituted = "";
+				var offset = i;
+				while (true) {
+					if (nextPart) {
+						var nextPartPos = substituted.indexOf(nextPart);
+						var stringValue = substituted.substring(0, nextPartPos);
+						substituted = substituted.substring(nextPartPos);
+					} else if (prefixes[offset + 1]) {
+						var nextPartPos = substituted.indexOf(prefixes[offset + 1]);
+						var stringValue = substituted.substring(0, nextPartPos);
+						substituted = substituted.substring(nextPartPos);
+					} else if (textParts.length > offset + 2) {
+						// If the separator between this variable and the next is blank (with no prefix), continue onwards
+						offset++;
+						nextPart = textParts[offset + 1];
+						continue;
+					} else {
+						var stringValue = substituted;
+						substituted = "";
+					}
+					break;
 				}
 				unSubstitutions[i](stringValue, result);
 			}

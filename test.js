@@ -42,9 +42,7 @@ function createTests(title, examplesDoc) {
 		}
 	});
 	
-	var unguessable = {
-		"up{+path}{var}/here": true
-	};
+	var unguessable = {};
 
 	describe(title + " (de-substitution)", function () {
 		for (var sectionTitle in examplesDoc) {
