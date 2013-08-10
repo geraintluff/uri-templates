@@ -88,7 +88,7 @@
 			for (var i = 0; i < varSpecs.length; i++) {
 				var varSpec = varSpecs[i];
 				var value = valueFunction(varSpec.name);
-				if (value == null || (Array.isArray(value) && value.length == 0)) {
+				if (value == null || (Array.isArray(value) && value.length == 0) || (typeof value == 'object' && Object.keys(value).length == 0)) {
 					startIndex++;
 					continue;
 				}
@@ -294,6 +294,7 @@
 		};
 		subFunction.varNames = varNames;
 		return {
+			prefix: prefix,
 			substitution: subFunction,
 			unSubstitution: guessFunction
 		};
@@ -305,6 +306,7 @@
 		}
 		var parts = template.split("{");
 		var textParts = [parts.shift()];
+		var prefixes = [];
 		var substitutions = [];
 		var unSubstitutions = [];
 		var varNames = [];
@@ -315,6 +317,7 @@
 			var funcs = uriTemplateSubstitution(spec);
 			substitutions.push(funcs.substitution);
 			unSubstitutions.push(funcs.unSubstitution);
+			prefixes.push(funcs.prefix);
 			textParts.push(remainder);
 			varNames = varNames.concat(funcs.substitution.varNames);
 		}
@@ -345,6 +348,10 @@
 				var nextPart = textParts[i + 1];
 				if (nextPart) {
 					var nextPartPos = substituted.indexOf(nextPart);
+					var stringValue = substituted.substring(0, nextPartPos);
+					substituted = substituted.substring(nextPartPos);
+				} else if (prefixes[i + 1]) {
+					var nextPartPos = substituted.indexOf(prefixes[i + 1]);
 					var stringValue = substituted.substring(0, nextPartPos);
 					substituted = substituted.substring(nextPartPos);
 				} else {
