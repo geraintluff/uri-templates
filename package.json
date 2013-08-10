@@ -1,0 +1,22 @@
+{
+  "name": "uri-templates",
+  "version": "0.1.0",
+  "description": "URI Templates (RFC6570) including de-substitution",
+  "main": "uri-templates.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/geraintluff/uri-templates.git"
+  },
+  "keywords": [
+    "rfc6570",
+    "uri",
+    "template"
+  ],
+  "author": "Geraint Luff",
+  "license": "http://geraintluff.github.io/tv4/LICENSE.txt",
+  "readmeFilename": "README.md",
+  "gitHead": "3c65c2e1809e8c0dca1fb6b440c18fbc7acd85da"
+}
