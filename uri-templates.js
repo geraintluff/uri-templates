@@ -12,6 +12,12 @@
 	var uriTemplateSuffices = {
 		"*": true
 	};
+	
+	function notReallyPercentEncode(string) {
+		return encodeURI(string).replace(/%25[0-9][0-9]/g, function (doubleEncoded) {
+			return "%" + doubleEncoded.substring(3);
+		});
+	}
 
 	function uriTemplateSubstitution(spec) {
 		var modifier = "";
@@ -77,13 +83,20 @@
 			varNames.push(varName);
 		}
 		var subFunction = function (valueFunction) {
-			var result = prefix;
+			var result = "";
+			var startIndex = 0;
 			for (var i = 0; i < varSpecs.length; i++) {
 				var varSpec = varSpecs[i];
-				if (i > 0) {
+				var value = valueFunction(varSpec.name);
+				if (value == null || (Array.isArray(value) && value.length == 0)) {
+					startIndex++;
+					continue;
+				}
+				if (i == startIndex) {
+					result += prefix;
+				} else {
 					result += (separator || ",");
 				}
-				var value = valueFunction(varSpec.name);
 				if (Array.isArray(value)) {
 					if (showVariables) {
 						result += varSpec.name + "=";
@@ -95,7 +108,7 @@
 								result += varSpec.name + "=";
 							}
 						}
-						result += shouldEscape ? encodeURIComponent(value[j]).replace(/!/g, "%21") : encodeURI(value[j]).replace(/%25/g, "%");
+						result += shouldEscape ? encodeURIComponent(value[j]).replace(/!/g, "%21") : notReallyPercentEncode(value[j]);
 					}
 				} else if (typeof value == "object") {
 					if (showVariables && !varSpec.suffices['*']) {
@@ -107,9 +120,9 @@
 							result += varSpec.suffices['*'] ? (separator || ",") : ",";
 						}
 						first = false;
-						result += shouldEscape ? encodeURIComponent(key).replace(/!/g, "%21") : encodeURI(key).replace(/%25/g, "%");
+						result += shouldEscape ? encodeURIComponent(key).replace(/!/g, "%21") : notReallyPercentEncode(key);
 						result += varSpec.suffices['*'] ? '=' : ",";
-						result += shouldEscape ? encodeURIComponent(value[key]).replace(/!/g, "%21") : encodeURI(value[key]).replace(/%25/g, "%");
+						result += shouldEscape ? encodeURIComponent(value[key]).replace(/!/g, "%21") : notReallyPercentEncode(value[key]);
 					}
 				} else {
 					if (showVariables) {
@@ -121,14 +134,18 @@
 					if (varSpec.truncate != null) {
 						value = value.substring(0, varSpec.truncate);
 					}
-					result += shouldEscape ? encodeURIComponent(value).replace(/!/g, "%21"): encodeURI(value).replace(/%25/g, "%");
+					result += shouldEscape ? encodeURIComponent(value).replace(/!/g, "%21"): notReallyPercentEncode(value);
 				}
 			}
 			return result;
 		};
 		var guessFunction = function (stringValue, resultObj) {
-			if (prefix && stringValue.substring(0, prefix.length) == prefix) {
-				stringValue = stringValue.substring(prefix.length);
+			if (prefix) {
+				if (stringValue.substring(0, prefix.length) == prefix) {
+					stringValue = stringValue.substring(prefix.length);
+				} else {
+					return null;
+				}
 			}
 			if (varSpecs.length == 1 && varSpecs[0].suffices['*']) {
 				var varSpec = varSpecs[0];

@@ -30,7 +30,6 @@ function createTests(title, examplesDoc) {
 						it(templateString, function () {
 							var template = uriTemplates(templateString);
 							var actualUri = template.fillFromObject(variables);
-							console.log([templateString, actualUri]);
 							if (typeof expected == "string") {
 								assert.strictEqual(actualUri, expected);
 							} else {
@@ -42,6 +41,10 @@ function createTests(title, examplesDoc) {
 			});	
 		}
 	});
+	
+	var unguessable = {
+		"up{+path}{var}/here": true
+	};
 
 	describe(title + " (de-substitution)", function () {
 		for (var sectionTitle in examplesDoc) {
@@ -49,16 +52,19 @@ function createTests(title, examplesDoc) {
 			describe(sectionTitle, function () {
 				for (var i = 0; i < exampleSet.testcases.length; i++) {
 					var pair = exampleSet.testcases[i];
-
+					
 					(function (templateString, expected, exampleSet) {
+						if (unguessable[templateString]) {
+							return;
+						}
+
 						it(templateString, function () {
 							var original = (typeof expected == 'string') ? expected : expected[0];
 							var template = uriTemplates(templateString);
 					
 							var guessedVariables = template.fromUri(original);
-							console.log(guessedVariables);
-							console.log(exampleSet.variables);
-					
+							assert.isObject(guessedVariables);
+							
 							var reconstructed = template.fillFromObject(guessedVariables);
 
 							if (typeof expected == "string") {
@@ -74,4 +80,4 @@ function createTests(title, examplesDoc) {
 	});
 }
 
-createTests("Spec examples", require('./uritemplate-test/spec-examples.json'));
+createTests("Spec examples by section", require('./uritemplate-test/spec-examples-by-section.json'));
