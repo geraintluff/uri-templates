@@ -2,6 +2,10 @@
 
 URI Templates ([RFC6570](http://tools.ietf.org/html/rfc6570)) in JavaScript, including de-substitution.
 
+It is tested against the [official test suite](https://github.com/uri-templates/uritemplate-test), including the extended tests.
+
+The "de-substitution" extracts parameter values from URIs.  It is also tested against the official test suite (including extended tests).
+
 ## Creation
 
 In Node:
@@ -45,5 +49,22 @@ var params = template2.fromUri(url2b);
 			bleep: "bloop"
 		}
 	}
+*/
+```
+
+While templates can be ambiguous (e.g. `"{var1}{var2}"`), it will still produce *something* that reconstructs into the original URI.
+
+It can handle all the cases in the official test suite, including the extended tests:
+
+```javascript
+var template = uriTemplate("{/id*}{?fields,token}");
+
+var values = template.fromUri("/person/albums?fields=id,name,picture&token=12345");
+/*
+{
+	id: ["person", 'albums"],
+	fields: ["id", "name", "picture"],
+	token: "12345"
+}
 */
 ```
