@@ -349,7 +349,14 @@
 				var nextPart = textParts[i + 1];
 				var offset = i;
 				while (true) {
-					if (nextPart) {
+					if (offset == textParts.length - 2) {
+						var endPart = substituted.substring(substituted.length - nextPart.length);
+						if (endPart !== nextPart) {
+							return undefined;
+						}
+						var stringValue = substituted.substring(0, substituted.length - nextPart.length);
+						substituted = endPart;
+					} else if (nextPart) {
 						var nextPartPos = substituted.indexOf(nextPart);
 						var stringValue = substituted.substring(0, nextPartPos);
 						substituted = substituted.substring(nextPartPos);
