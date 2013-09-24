@@ -335,7 +335,6 @@
 			for (var i = 0; i < textParts.length; i++) {
 				var part = textParts[i];
 				if (substituted.substring(0, part.length) !== part) {
-					console.log([substituted, part]);
 					return undefined;
 				}
 				substituted = substituted.substring(part.length);
