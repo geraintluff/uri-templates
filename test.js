@@ -79,7 +79,7 @@ function createTests(title, examplesDoc) {
 }
 
 createTests("Spec examples by section", require('./uritemplate-test/spec-examples-by-section.json'));
-
 createTests("Extended examples", require('./uritemplate-test/extended-tests.json'));
 
-createTests("Custom examples", require('./custom-tests/custom-tests.json'));
+createTests("Custom examples 1", require('./test/custom-tests.json'));
+createTests("Custom examples 2", require('./test/custom-tests-2.json'));
