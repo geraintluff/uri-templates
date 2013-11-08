@@ -1,0 +1,12 @@
+{
+    "Custom Examples 1": {
+        "variables": {
+            "path": "a/b/c",
+            "query": {"abc": 123}
+        },
+        "testcases": [
+            ["{path}{?query*}", "a%2Fb%2Fc?abc=123"],
+            ["{+path}{?query*}", "a/b/c?abc=123"]
+        ]
+    }
+}

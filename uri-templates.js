@@ -388,4 +388,5 @@
 	if (this) {
 		this.UriTemplate = UriTemplate;
 	}
+	return UriTemplate;
 }).call(this);
