@@ -1,4 +1,4 @@
-(function () {
+var UriTemplate = (function () {
 
 	var uriTemplateGlobalModifiers = {
 		"+": true,
