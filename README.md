@@ -22,10 +22,10 @@ var template2 = new UriTemplate("/prefix/{?params*}");
 ## Substitution using an object
 ```javascript
 // "/categories/green/round/"
-var uri1 = template1.fillWithObject({colour: "green", shape: "round"});
+var uri1 = template1.fillFromObject({colour: "green", shape: "round"});
 
 // "/prefix/?a=A&b=B&c=C
-var uri2 = template2.fillWithObject({
+var uri2 = template2.fillFromObject({
 	params: {a: "A", b: "B", c: "C"}
 });
 ```
