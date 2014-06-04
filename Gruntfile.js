@@ -44,7 +44,7 @@ module.exports = function (grunt) {
 		mochaTest: {
 			//node-side
 			any: {
-				src: ['test.js'],
+				src: ['test.js', 'test/custom-tests.js'],
 				options: {
 					reporter: 'mocha-unfunk-reporter',
 					bail: false

@@ -230,12 +230,13 @@ var UriTemplate = (function () {
 				var specIndexMap = {};
 				for (var i = 0; i < arrayValue.length; i++) {
 					// Try from beginning
-					for (var firstStarred = 0; firstStarred < varSpecs.length - 1 && firstStarred < i; firstStarred++) {
+					var firstStarred = 0;
+					for (; firstStarred < varSpecs.length - 1 && firstStarred < i; firstStarred++) {
 						if (varSpecs[firstStarred].suffices['*']) {
 							break;
 						}
 					}
-					if (j == i) {
+					if (firstStarred == i) {
 						// The first [i] of them have no "*" suffix
 						specIndexMap[i] = i;
 						continue;
