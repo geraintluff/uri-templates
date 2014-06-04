@@ -380,8 +380,12 @@ var UriTemplate = (function () {
 			return result;
 		}
 		this.varNames = varNames;
+		this.template = template;
 	}
 	UriTemplate.prototype = {
+		toString: function () {
+			return this.template;
+		},
 		fillFromObject: function (obj) {
 			return this.fill(function (varName) {
 				return obj[varName];

@@ -12,3 +12,12 @@ describe("Guessing variable priority", function () {
 		assert.strictEqual(guess.page, undefined);
 	})
 });
+
+describe("Original string available", function () {
+	it('GitHub issue #7', function () {
+		var template = new UriTemplate("{+path}/c/capture{/date,id,page}");
+
+		assert.strictEqual(template.template, '{+path}/c/capture{/date,id,page}');
+		assert.strictEqual(template + "", '{+path}/c/capture{/date,id,page}');
+	})
+});

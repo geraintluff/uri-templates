@@ -1,6 +1,6 @@
 {
   "name": "uri-templates",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "URI Templates (RFC6570) including de-substitution",
   "main": "uri-templates.js",
   "scripts": {
