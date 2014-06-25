@@ -68,3 +68,7 @@ var values = template.fromUri("/person/albums?fields=id,name,picture&token=12345
 }
 */
 ```
+
+## License
+
+This project is released under an [MIT license](http://geraintluff.github.io/tv4/LICENSE.txt).
