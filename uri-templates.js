@@ -1,5 +1,12 @@
-var UriTemplate = (function () {
-
+(function (global, factory) {
+	if (typeof define === 'function' && define.amd) {
+		define([], factory);
+	} else if (typeof module !== 'undefined' && module.exports){
+		module.exports = factory();
+	} else {
+		global.UriTemplate = factory();
+	}
+})(this, function () {
 	var uriTemplateGlobalModifiers = {
 		"+": true,
 		"#": true,
@@ -393,11 +400,5 @@ var UriTemplate = (function () {
 		}
 	};
 	
-	if (typeof module != 'undefined') {
-		module.exports = UriTemplate;
-	}
-	if (this) {
-		this.UriTemplate = UriTemplate;
-	}
 	return UriTemplate;
-}).call(this);
+});
