@@ -83,3 +83,5 @@ createTests("Extended examples", require('./uritemplate-test/extended-tests.json
 
 createTests("Custom examples 1", require('./test/custom-tests.json'));
 createTests("Custom examples 2", require('./test/custom-tests-2.json'));
+
+require('./test/custom-tests.js');

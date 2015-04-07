@@ -376,6 +376,7 @@
 						substituted = substituted.substring(nextPartPos);
 					} else if (prefixes[offset + 1]) {
 						var nextPartPos = substituted.indexOf(prefixes[offset + 1]);
+						if (nextPartPos === -1) nextPartPos = substituted.length;
 						var stringValue = substituted.substring(0, nextPartPos);
 						substituted = substituted.substring(nextPartPos);
 					} else if (textParts.length > offset + 2) {

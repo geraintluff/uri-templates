@@ -21,3 +21,16 @@ describe("Original string available", function () {
 		assert.strictEqual(template + "", '{+path}/c/capture{/date,id,page}');
 	})
 });
+
+describe("Query optional when decoding", function () {
+	it('GitHub issue #12', function () {
+		var template = new UriTemplate("{/type,ids,field}{?query*}");
+
+		var uri = '/user/1,2,3/posts';
+		var guess = template.fromUri(uri);
+		assert.isObject(guess);
+		
+		var trimmed = template.fill(guess).replace(/\?$/, '');
+		assert.strictEqual(trimmed, uri);
+	});
+});
