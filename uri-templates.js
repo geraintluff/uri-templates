@@ -330,6 +330,13 @@
 			varNames = varNames.concat(funcs.substitution.varNames);
 		}
 		this.fill = function (valueFunction) {
+			if (valueFunction && typeof valueFunction !== 'function') {
+				var value = valueFunction;
+				valueFunction = function (varName) {
+					return value[varName];
+				};
+			}
+			
 			var result = textParts[0];
 			for (var i = 0; i < substitutions.length; i++) {
 				var substitution = substitutions[i];
@@ -394,9 +401,7 @@
 			return this.template;
 		},
 		fillFromObject: function (obj) {
-			return this.fill(function (varName) {
-				return obj[varName];
-			});
+			return this.fill(obj);
 		}
 	};
 	
