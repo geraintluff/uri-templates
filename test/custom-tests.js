@@ -34,3 +34,23 @@ describe("Query optional when decoding", function () {
 		assert.strictEqual(trimmed, uri);
 	});
 });
+
+describe("Decode empty query", function () {
+	it('Must return a empty object', function () {
+        var template = new UriTemplate('{?query}');
+
+        var uri = '?';
+        var guess = template.fromUri(uri);
+
+        assert.isUndefined(guess['']);
+    });
+
+	it('Must return a empty object in property', function () {
+        var template = new UriTemplate('{?query*}');
+
+        var uri = '?';
+        var guess = template.fromUri(uri);
+
+        assert.isUndefined(guess['']);
+    });
+});

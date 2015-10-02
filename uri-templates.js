@@ -19,7 +19,7 @@
 	var uriTemplateSuffices = {
 		"*": true
 	};
-	
+
 	function notReallyPercentEncode(string) {
 		return encodeURI(string).replace(/%25[0-9][0-9]/g, function (doubleEncoded) {
 			return "%" + doubleEncoded.substring(3);
@@ -171,7 +171,7 @@
 				for (var i = 0; i < arrayValue.length; i++) {
 					var stringValue = arrayValue[i];
 					if (shouldEscape && stringValue.indexOf('=') != -1) {
-						hasEquals = true;  
+						hasEquals = true;
 					}
 					var innerArrayValue = stringValue.split(",");
 					for (var j = 0; j < innerArrayValue.length; j++) {
@@ -185,11 +185,15 @@
 						arrayValue[i] = innerArrayValue;
 					}
 				}
-			
+
 				if (showVariables || hasEquals) {
 					var objectValue = resultObj[varName] || {};
 					for (var j = 0; j < arrayValue.length; j++) {
 						var innerValue = stringValue;
+						if (showVariables && !innerValue) {
+							// The empty string isn't a valid variable, so if our value is zero-length we have nothing
+							continue;
+						}
 						if (typeof arrayValue[j] == "string") {
 							var stringValue = arrayValue[j];
 							var innerVarName = stringValue.split("=", 1)[0];
@@ -265,8 +269,13 @@
 				}
 				for (var i = 0; i < arrayValue.length; i++) {
 					var stringValue = arrayValue[i];
+					if (!stringValue && showVariables) {
+						// The empty string isn't a valid variable, so if our value is zero-length we have nothing
+						continue;
+					}
 					var innerArrayValue = stringValue.split(",");
-				
+					var hasEquals = false;
+
 					if (showVariables) {
 						var stringValue = innerArrayValue[0]; // using innerArrayValue
 						var varName = stringValue.split("=", 1)[0];
@@ -336,7 +345,7 @@
 					return value[varName];
 				};
 			}
-			
+
 			var result = textParts[0];
 			for (var i = 0; i < substitutions.length; i++) {
 				var substitution = substitutions[i];
@@ -405,6 +414,6 @@
 			return this.fill(obj);
 		}
 	};
-	
+
 	return UriTemplate;
 });
