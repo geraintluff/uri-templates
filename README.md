@@ -41,7 +41,7 @@ var uri1b = template1.fill(function (varName) {
 ## Guess variables from URI ("de-substitution")
 ```javascript
 var uri2b = "/prefix/?beep=boop&bleep=bloop";
-var params = template2.fromUri(url2b);
+var params = template2.fromUri(uri2b);
 /*
 	{
 		params: {
