@@ -147,6 +147,9 @@
 			return result;
 		};
 		var guessFunction = function (stringValue, resultObj) {
+			if (prefix === '?' || prefix === '&') {
+				stringValue = stringValue.replace(/\+/g, ' ');
+			}
 			if (prefix) {
 				if (stringValue.substring(0, prefix.length) == prefix) {
 					stringValue = stringValue.substring(prefix.length);
