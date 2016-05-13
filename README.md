@@ -19,6 +19,28 @@ In browser:
 var template2 = new UriTemplate("/prefix/{?params*}");
 ```
 
+## Configuration
+You can provide a configuration object as the second argument:
+```javascript
+new UriTemplate("/prefix/{?params*}", {
+	leaveUnmatchedPlaceholders: true
+});
+```
+
+`leaveUnmatchedPlaceholders` defaults to `false`. When `true` any placeholders which do not have a corresponding key in the object, or their value is `null`, will be left in the built URL.
+
+E.g.
+```javascript
+var template = new UriTemplate("/prefix/{a}?arg1={arg1Value}", {
+	leaveUnmatchedPlaceholders: true
+});
+
+console.log(template.fill({
+	a: "something"
+}));
+```
+will output "/prefix/something?arg1={arg1Value}".
+
 ## Substitution using an object
 ```javascript
 // "/categories/green/round/"
