@@ -69,6 +69,7 @@
 		var varSpecMap = {};
 		for (var i = 0; i < varList.length; i++) {
 			var varName = varList[i];
+			var completeVarName = varName;
 			var truncate = null;
 			if (varName.indexOf(":") != -1) {
 				var parts = varName.split(":");
@@ -83,7 +84,8 @@
 			var varSpec = {
 				truncate: truncate,
 				name: varName,
-				suffices: suffices
+				suffices: suffices,
+				completeVarName: completeVarName
 			};
 			varSpecs.push(varSpec);
 			varSpecMap[varName] = varSpec;
@@ -96,6 +98,10 @@
 				var varSpec = varSpecs[i];
 				var value = valueFunction(varSpec.name);
 				if (value == null || (Array.isArray(value) && value.length == 0) || (typeof value == 'object' && Object.keys(value).length == 0)) {
+					if (value == null && this.options.leaveUnmatchedPlaceholders) {
+						// leave this template placeholder in the final url
+						result += "{"+varSpec.completeVarName+"}";
+					}
 					startIndex++;
 					continue;
 				}
@@ -317,7 +323,8 @@
 		};
 	}
 
-	function UriTemplate(template) {
+	function UriTemplate(template, options) {
+		options = options || {};
 		if (!(this instanceof UriTemplate)) {
 			return new UriTemplate(template);
 		}
@@ -349,7 +356,7 @@
 			var result = textParts[0];
 			for (var i = 0; i < substitutions.length; i++) {
 				var substitution = substitutions[i];
-				result += substitution(valueFunction);
+				result += substitution.call(this, valueFunction);
 				result += textParts[i + 1];
 			}
 			return result;
@@ -405,6 +412,7 @@
 		}
 		this.varNames = varNames;
 		this.template = template;
+		this.options = options;
 	}
 	UriTemplate.prototype = {
 		toString: function () {
