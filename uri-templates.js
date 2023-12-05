@@ -1,12 +1,9 @@
 (function (global, factory) {
-	if (typeof define === 'function' && define.amd) {
-		define([], factory);
-	} else if (typeof module !== 'undefined' && module.exports){
-		module.exports = factory();
-	} else {
-		global.UriTemplate = factory();
-	}
-})(this, function () {
+	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(global = typeof globalThis !== 'undefined' ? globalThis : global || self, global.UriTemplate = factory());
+})(this, (function () { 'use strict';
+
 	var uriTemplateGlobalModifiers = {
 		"+": true,
 		"#": true,
@@ -402,7 +399,7 @@
 				unSubstitutions[i](stringValue, result);
 			}
 			return result;
-		}
+		};
 		this.varNames = varNames;
 		this.template = template;
 	}
@@ -416,4 +413,5 @@
 	};
 
 	return UriTemplate;
-});
+
+}));
