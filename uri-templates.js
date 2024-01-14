@@ -5,70 +5,70 @@
 })(this, (function () { 'use strict';
 
 	var uriTemplateGlobalModifiers = {
-		"+": true,
-		"#": true,
-		".": true,
-		"/": true,
-		";": true,
-		"?": true,
-		"&": true
+		'+': true,
+		'#': true,
+		'.': true,
+		'/': true,
+		';': true,
+		'?': true,
+		'&': true
 	};
 	var uriTemplateSuffices = {
-		"*": true
+		'*': true
 	};
 
 	function notReallyPercentEncode(string) {
 		return encodeURI(string).replace(/%25[0-9][0-9]/g, function (doubleEncoded) {
-			return "%" + doubleEncoded.substring(3);
+			return '%' + doubleEncoded.substring(3);
 		});
 	}
 
 	function uriTemplateSubstitution(spec) {
-		var modifier = "";
+		var modifier = '';
 		if (uriTemplateGlobalModifiers[spec.charAt(0)]) {
 			modifier = spec.charAt(0);
 			spec = spec.substring(1);
 		}
-		var separator = "";
-		var prefix = "";
+		var separator = '';
+		var prefix = '';
 		var shouldEscape = true;
 		var showVariables = false;
 		var trimEmptyString = false;
 		if (modifier == '+') {
 			shouldEscape = false;
-		} else if (modifier == ".") {
-			prefix = ".";
-			separator = ".";
-		} else if (modifier == "/") {
-			prefix = "/";
-			separator = "/";
+		} else if (modifier == '.') {
+			prefix = '.';
+			separator = '.';
+		} else if (modifier == '/') {
+			prefix = '/';
+			separator = '/';
 		} else if (modifier == '#') {
-			prefix = "#";
+			prefix = '#';
 			shouldEscape = false;
 		} else if (modifier == ';') {
-			prefix = ";";
-			separator = ";",
+			prefix = ';';
+			separator = ';',
 			showVariables = true;
 			trimEmptyString = true;
 		} else if (modifier == '?') {
-			prefix = "?";
-			separator = "&",
+			prefix = '?';
+			separator = '&',
 			showVariables = true;
 		} else if (modifier == '&') {
-			prefix = "&";
-			separator = "&",
+			prefix = '&';
+			separator = '&',
 			showVariables = true;
 		}
 
 		var varNames = [];
-		var varList = spec.split(",");
+		var varList = spec.split(',');
 		var varSpecs = [];
 		var varSpecMap = {};
 		for (var i = 0; i < varList.length; i++) {
 			var varName = varList[i];
 			var truncate = null;
-			if (varName.indexOf(":") != -1) {
-				var parts = varName.split(":");
+			if (varName.indexOf(':') != -1) {
+				var parts = varName.split(':');
 				varName = parts[0];
 				truncate = parseInt(parts[1]);
 			}
@@ -87,7 +87,7 @@
 			varNames.push(varName);
 		}
 		var subFunction = function (valueFunction) {
-			var result = "";
+			var result = '';
 			var startIndex = 0;
 			for (var i = 0; i < varSpecs.length; i++) {
 				var varSpec = varSpecs[i];
@@ -99,46 +99,46 @@
 				if (i == startIndex) {
 					result += prefix;
 				} else {
-					result += (separator || ",");
+					result += (separator || ',');
 				}
 				if (Array.isArray(value)) {
 					if (showVariables) {
-						result += varSpec.name + "=";
+						result += varSpec.name + '=';
 					}
 					for (var j = 0; j < value.length; j++) {
 						if (j > 0) {
-							result += varSpec.suffices['*'] ? (separator || ",") : ",";
+							result += varSpec.suffices['*'] ? (separator || ',') : ',';
 							if (varSpec.suffices['*'] && showVariables) {
-								result += varSpec.name + "=";
+								result += varSpec.name + '=';
 							}
 						}
-						result += shouldEscape ? encodeURIComponent(value[j]).replace(/!/g, "%21") : notReallyPercentEncode(value[j]);
+						result += shouldEscape ? encodeURIComponent(value[j]).replace(/!/g, '%21') : notReallyPercentEncode(value[j]);
 					}
-				} else if (typeof value == "object") {
+				} else if (typeof value == 'object') {
 					if (showVariables && !varSpec.suffices['*']) {
-						result += varSpec.name + "=";
+						result += varSpec.name + '=';
 					}
 					var first = true;
 					for (var key in value) {
 						if (!first) {
-							result += varSpec.suffices['*'] ? (separator || ",") : ",";
+							result += varSpec.suffices['*'] ? (separator || ',') : ',';
 						}
 						first = false;
-						result += shouldEscape ? encodeURIComponent(key).replace(/!/g, "%21") : notReallyPercentEncode(key);
-						result += varSpec.suffices['*'] ? '=' : ",";
-						result += shouldEscape ? encodeURIComponent(value[key]).replace(/!/g, "%21") : notReallyPercentEncode(value[key]);
+						result += shouldEscape ? encodeURIComponent(key).replace(/!/g, '%21') : notReallyPercentEncode(key);
+						result += varSpec.suffices['*'] ? '=' : ',';
+						result += shouldEscape ? encodeURIComponent(value[key]).replace(/!/g, '%21') : notReallyPercentEncode(value[key]);
 					}
 				} else {
 					if (showVariables) {
 						result += varSpec.name;
-						if (!trimEmptyString || value != "") {
-							result += "=";
+						if (!trimEmptyString || value != '') {
+							result += '=';
 						}
 					}
 					if (varSpec.truncate != null) {
 						value = value.substring(0, varSpec.truncate);
 					}
-					result += shouldEscape ? encodeURIComponent(value).replace(/!/g, "%21"): notReallyPercentEncode(value);
+					result += shouldEscape ? encodeURIComponent(value).replace(/!/g, '%21'): notReallyPercentEncode(value);
 				}
 			}
 			return result;
@@ -154,13 +154,13 @@
 			if (varSpecs.length == 1 && varSpecs[0].suffices['*']) {
 				var varSpec = varSpecs[0];
 				var varName = varSpec.name;
-				var arrayValue = varSpec.suffices['*'] ? stringValue.split(separator || ",") : [stringValue];
-				var hasEquals = (shouldEscape && stringValue.indexOf('=') != -1);	// There's otherwise no way to distinguish between "{value*}" for arrays and objects
+				var arrayValue = varSpec.suffices['*'] ? stringValue.split(separator || ',') : [stringValue];
+				var hasEquals = (shouldEscape && stringValue.indexOf('=') != -1);	// There's otherwise no way to distinguish between '{value*}' for arrays and objects
 				for (var i = 1; i < arrayValue.length; i++) {
 					var stringValue = arrayValue[i];
 					if (hasEquals && stringValue.indexOf('=') == -1) {
-						// Bit of a hack - if we're expecting "=" for key/value pairs, and values can't contain "=", then assume a value has been accidentally split
-						arrayValue[i - 1] += (separator || ",") + stringValue;
+						// Bit of a hack - if we're expecting '=' for key/value pairs, and values can't contain '=', then assume a value has been accidentally split
+						arrayValue[i - 1] += (separator || ',') + stringValue;
 						arrayValue.splice(i, 1);
 						i--;
 					}
@@ -170,7 +170,7 @@
 					if (shouldEscape && stringValue.indexOf('=') != -1) {
 						hasEquals = true;
 					}
-					var innerArrayValue = stringValue.split(",");
+					var innerArrayValue = stringValue.split(',');
 					for (var j = 0; j < innerArrayValue.length; j++) {
 						if (shouldEscape) {
 							innerArrayValue[j] = decodeURIComponent(innerArrayValue[j]);
@@ -191,14 +191,14 @@
 							// The empty string isn't a valid variable, so if our value is zero-length we have nothing
 							continue;
 						}
-						if (typeof arrayValue[j] == "string") {
+						if (typeof arrayValue[j] == 'string') {
 							var stringValue = arrayValue[j];
-							var innerVarName = stringValue.split("=", 1)[0];
+							var innerVarName = stringValue.split('=', 1)[0];
 							var stringValue = stringValue.substring(innerVarName.length + 1);
 							innerValue = stringValue;
 						} else {
 							var stringValue = arrayValue[j][0];
-							var innerVarName = stringValue.split("=", 1)[0];
+							var innerVarName = stringValue.split('=', 1)[0];
 							var stringValue = stringValue.substring(innerVarName.length + 1);
 							arrayValue[j][0] = stringValue;
 							innerValue = arrayValue[j];
@@ -234,7 +234,7 @@
 					}
 				}
 			} else {
-				var arrayValue = (varSpecs.length == 1) ? [stringValue] : stringValue.split(separator || ",");
+				var arrayValue = (varSpecs.length == 1) ? [stringValue] : stringValue.split(separator || ',');
 				var specIndexMap = {};
 				for (var i = 0; i < arrayValue.length; i++) {
 					// Try from beginning
@@ -245,7 +245,7 @@
 						}
 					}
 					if (firstStarred == i) {
-						// The first [i] of them have no "*" suffix
+						// The first [i] of them have no '*' suffix
 						specIndexMap[i] = i;
 						continue;
 					} else {
@@ -256,7 +256,7 @@
 							}
 						}
 						if ((varSpecs.length - lastStarred) == (arrayValue.length - i)) {
-							// The last [length - i] of them have no "*" suffix
+							// The last [length - i] of them have no '*' suffix
 							specIndexMap[i] = lastStarred;
 							continue;
 						}
@@ -270,12 +270,12 @@
 						// The empty string isn't a valid variable, so if our value is zero-length we have nothing
 						continue;
 					}
-					var innerArrayValue = stringValue.split(",");
+					var innerArrayValue = stringValue.split(',');
 					var hasEquals = false;
 
 					if (showVariables) {
 						var stringValue = innerArrayValue[0]; // using innerArrayValue
-						var varName = stringValue.split("=", 1)[0];
+						var varName = stringValue.split('=', 1)[0];
 						var stringValue = stringValue.substring(varName.length + 1);
 						innerArrayValue[0] = stringValue;
 						var varSpec = varSpecMap[varName] || varSpecs[0];
@@ -318,7 +318,7 @@
 		if (!(this instanceof UriTemplate)) {
 			return new UriTemplate(template);
 		}
-		var parts = template.split("{");
+		var parts = template.split('{');
 		var textParts = [parts.shift()];
 		var prefixes = [];
 		var substitutions = [];
@@ -326,7 +326,7 @@
 		var varNames = [];
 		while (parts.length > 0) {
 			var part = parts.shift();
-			var spec = part.split("}")[0];
+			var spec = part.split('}')[0];
 			var remainder = part.substring(spec.length + 1);
 			var funcs = uriTemplateSubstitution(spec);
 			substitutions.push(funcs.substitution);
@@ -360,7 +360,7 @@
 				}
 				substituted = substituted.substring(part.length);
 				if (i >= textParts.length - 1) {
-					if (substituted == "") {
+					if (substituted == '') {
 						break;
 					} else {
 						return undefined;
@@ -392,7 +392,7 @@
 						continue;
 					} else {
 						var stringValue = substituted;
-						substituted = "";
+						substituted = '';
 					}
 					break;
 				}
