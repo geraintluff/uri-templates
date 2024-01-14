@@ -1,14 +1,17 @@
-"use strict";
+import {readFile} from 'fs/promises';
+import {join, dirname} from 'path';
+import {fileURLToPath} from 'url';
+import assert from 'proclaim';
+import uriTemplates from '../uri-templates.js';
 
-var uriTemplates = require('./uri-templates');
-var assert = require('proclaim');
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 describe("Basic tests", function () {
 
 	it("Basic substitution", function () {
 		var template = uriTemplates("/prefix/{var}/suffix");
 		var uri = template.fillFromObject({var: "test"});
-		
+
 		assert.strictEqual(uri, "/prefix/test/suffix");
 	});
 });
@@ -19,10 +22,6 @@ function createTests(title, examplesDoc) {
 			var exampleSet = examplesDoc[sectionTitle];
 			describe(sectionTitle, function () {
 				var variables = exampleSet.variables;
-				var variableFunction = function (varName) {
-					return variables[varName];
-				};
-			
 				for (var i = 0; i < exampleSet.testcases.length; i++) {
 					var pair = exampleSet.testcases[i];
 
@@ -38,10 +37,10 @@ function createTests(title, examplesDoc) {
 						});
 					})(pair[0], pair[1]);
 				}
-			});	
+			});
 		}
 	});
-	
+
 	var unguessable = {};
 
 	describe(title + " (de-substitution)", function () {
@@ -50,8 +49,8 @@ function createTests(title, examplesDoc) {
 			describe(sectionTitle, function () {
 				for (var i = 0; i < exampleSet.testcases.length; i++) {
 					var pair = exampleSet.testcases[i];
-					
-					(function (templateString, expected, exampleSet) {
+
+					(function (templateString, expected) {
 						if (unguessable[templateString]) {
 							return;
 						}
@@ -59,10 +58,10 @@ function createTests(title, examplesDoc) {
 						it(templateString, function () {
 							var original = (typeof expected == 'string') ? expected : expected[0];
 							var template = uriTemplates(templateString);
-					
+
 							var guessedVariables = template.fromUri(original);
 							assert.isObject(guessedVariables);
-							
+
 							var reconstructed = template.fillFromObject(guessedVariables);
 
 							if (typeof expected == "string") {
@@ -71,17 +70,19 @@ function createTests(title, examplesDoc) {
 								assert.includes(expected, reconstructed);
 							}
 						});
-					})(pair[0], pair[1], exampleSet);
+					})(pair[0], pair[1]);
 				}
-			});	
+			});
 		}
 	});
 }
 
-createTests("Spec examples by section", require('./uritemplate-test/spec-examples-by-section.json'));
-createTests("Extended examples", require('./uritemplate-test/extended-tests.json'));
+async function readAndParseJSON (file) {
+  return JSON.parse(await readFile(join(__dirname, file)));
+}
 
-createTests("Custom examples 1", require('./test/custom-tests.json'));
-createTests("Custom examples 2", require('./test/custom-tests-2.json'));
+createTests("Spec examples by section", await readAndParseJSON('../uritemplate-test/spec-examples-by-section.json'));
+createTests("Extended examples", await readAndParseJSON('../uritemplate-test/extended-tests.json'));
 
-require('./test/custom-tests.js');
+createTests("Custom examples 1", await readAndParseJSON('./custom-tests.json'));
+createTests("Custom examples 2", await readAndParseJSON('./custom-tests-2.json'));
