@@ -1,5 +1,5 @@
-var UriTemplate = require('../uri-templates');
-var assert = require('proclaim');
+import assert from 'proclaim';
+import UriTemplate from '../uri-templates.js';
 
 describe("Guessing variable priority", function () {
 	it('GitHub issue #8', function () {
